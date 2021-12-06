@@ -9,11 +9,11 @@ class registro
     public:
 	
 	//atributos
-	int identificador; //protected?
-	string fecha; //protected?
+	string identificador; //se usa en otras clases          //num
+	string fecha; //FECHA AUTOMATICA
 	
 	//constructor
-    registro(int,string); 
+    registro(string,string); 
 	//destructor
 	~registro();
 	
@@ -21,18 +21,18 @@ class registro
 
 	
 	//gets
-    int getIdentificador(){return identificador;}
+    string getIdentificador(){return identificador;}
 	string getFecha(){return fecha;}
 
 	//sets
-    void setIdentificador(int _identificador){identificador = _identificador;}
+    void setIdentificador(string _identificador){identificador = _identificador;}
     void setFecha(string _fecha){fecha = _fecha;}
 
 };
 
 
-//constructor clase registro -padre-
-registro::registro(int _identificador,string _fecha)
+//constructor clase registro -abuelo-
+registro::registro(string _identificador,string _fecha)
 {	
 	identificador = _identificador;
 	fecha = _fecha;
@@ -42,3 +42,8 @@ registro::registro(int _identificador,string _fecha)
 registro::~registro(){
 }
 
+void registro::mostrarRegistro()
+{
+	cout<<"Identificador: "<<identificador<<endl;
+	cout<<"Fecha: "<<fecha<<endl;
+}

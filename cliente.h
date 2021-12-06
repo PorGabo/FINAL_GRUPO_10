@@ -3,26 +3,19 @@ using namespace std;
 
 class cliente : public registro
 {
-	public:
+	private:
 	//atributos
 	string nombre;
-	string telefono;
-	string domicilio;
+	string telefono; //num (x el momento)
+	string domicilio;	
 	
+	public:
 	//constructor
-	cliente(int,string,string,string,string);
+	cliente(string,string,string,string,string);
 	//destructor
 	~cliente();
 	
 	void mostrarCliente();
-	
-	//void escribir_registro_clientes();
-	//void leer_registro_clientes();
-	//void registro_especifico_cliente();
-	
-	// void MenuVendedor();
-	// void MenuRegistroEspecifico();
-	// void MenuRegistroGeneral();
 	
 	//Gets
     string getNombre(){return nombre;}
@@ -38,7 +31,7 @@ class cliente : public registro
 
 
 //constructor de cliente 
-cliente::cliente(int _identificador,string _fecha,string _nombre,string _telefono,string _domicilio) : registro(_identificador,_fecha)
+cliente::cliente(string _identificador,string _fecha,string _nombre,string _telefono,string _domicilio) : registro(_identificador,_fecha)
 {
     nombre = _nombre;
     telefono = _telefono;
@@ -49,4 +42,14 @@ cliente::cliente(int _identificador,string _fecha,string _nombre,string _telefon
 
 //destructor
 cliente::~cliente(){
+}
+
+
+void cliente::mostrarCliente()
+{
+	cout<<"Dni: "<<identificador<<endl;
+	cout<<"Fecha de Registro: "<<fecha<<endl;
+	cout<<"Nombre: "<<nombre<<endl;
+	cout<<"Telefono: "<<telefono<<endl;
+	cout<<"Domicilio: "<<domicilio<<endl;
 }

@@ -2,25 +2,39 @@
 
 using namespace std;
 
+string fechaActual();
 void pausa();
 void pausaFin();
+bool isNumber(const string&);
+bool isNoNumber(const string&);
+
 
 //atoy?
 
-class Menu{
-    public:
+class Menu
+{
+    private:
+	//referentes para funciones lectura
+	string l_id,l_fecha,l_producto,l_proveedor,l_g_remitente,l_g_transportista,l_cantidad,l_valor_u,l_igv,l_precio,l_nombre,l_telefono,l_domicilio,l_espacio,nulo = "";
+	
+	
+	public:
     compra **com;
     venta **ven;
 	cliente **clien;
 	int num_compras,num_ventas,num_clientes, n_elements;
 	
-	//referentes para funciones lectura
-	string l_id,l_fecha,l_producto,l_proveedor,l_g_remitente,l_g_transportista,l_cantidad,l_valor_u,l_igv,l_precio,l_nombre,l_telefono,l_domicilio,l_espacio,nulo = "";
+	
+	
 	
 	//constructor
 	Menu();
 	//destructor
 	~Menu();
+	
+	
+	
+	
 	
 	//menus
 	void MenuPrincipal();
@@ -29,31 +43,40 @@ class Menu{
 	void MenuRegistroGeneral();
 	void MenuRegistroEspecifico();
 	
-	//guardar: memoria --> txt y delete memoria
+	//guardar: memoria --> txt y delete memory
 	void guardar_compras();
 	void guardar_ventas();
 	void guardar_clientes();
 	void guardar_datos();
 	
-	//ingresa a memoria , if memoria llena guarda
+	//ingresa a memoria , if memoria llena --> guarda
 	void escribir_registro_compras();
 	void escribir_registro_ventas();
 	void escribir_registro_clientes();
 	
+	//guarda y lee txt
 	void leer_registro_compras();
-	void leer_registro_ventas();
 	void leer_registro_clientes();
+	//lee txt y memoria
+	void leer_registro_ventas();
 	
+	//guarda en txt y busca coincidencias
 	void registro_especifico_compra();
 	void registro_especifico_venta();
 	void registro_especifico_cliente();
+	
+	//muestra lo que hay en memoria
+	void registrosVentasRecientes();
+	
 	
 };
 
 //constructor de Menu 
 Menu::Menu()
 {
-	n_elements = 20; //cantidad de elementos para tener en memoria (aplicable para las 3 memorias)
+	n_elements = 30; //cantidad de elementos para tener en memoria 
+	//(aplicable para las 3 memorias)
+	
     //contadores para cada arreglo
 	num_compras=0;
 	num_ventas=0;
@@ -63,7 +86,6 @@ Menu::Menu()
 	com = new compra *[n_elements];  // *{ * , *, * ,*};
 	ven = new venta *[n_elements];
 	clien = new cliente *[n_elements];
-	
 }
 
 //destructor
@@ -90,7 +112,7 @@ Menu::~Menu(){
 void Menu::MenuPrincipal()
 {
 	system("CLS");
-	cout<<"\n----------------------Bienvenido al Sistema----------------------\n\n\n";
+	cout<<"\n----------------------BIENVENIDO AL SISTEMA----------------------\n\n\n";
 	cout<<"Menu Principal\n\n";
 	
 	string opcion;
@@ -198,7 +220,8 @@ void Menu::MenuVendedor()
 	string opcion;
 	cout<<"1. Ingresar Venta \n";
 	cout<<"2. Ingresar Cliente \n";
-	cout<<"3. Retroceder \n\n";
+	cout<<"3. Ventas recientes\n";
+	cout<<"4. Retroceder \n\n";
 	cout<<"Opcion: ";
 	cin>>opcion;
 	cout<<"\n\n\n";
@@ -222,6 +245,16 @@ void Menu::MenuVendedor()
 	}
 	
 	else if (opcion=="3")
+	{
+		cout<<"Selecciono opcion 3 \n\n\n";
+		system("CLS");
+		cout<<"Menu Principal < Menu Vendedor < Ventas Recientes\n\n";
+		registrosVentasRecientes();
+		pausa();
+		MenuVendedor();
+	}
+	
+	else if (opcion=="4")
 	{
 		cout<<"Retrocediendo ...\n\n\n";
 		MenuPrincipal();
@@ -411,7 +444,6 @@ void Menu::guardar_compras()
 		
 		for(int i=0; i<num_compras; i++)
 		{
-
 			delete com[i];
 			//x{x,x,x,x,x,x}
 		}
@@ -451,25 +483,18 @@ void Menu::guardar_ventas()
 			
 			registro_ventas<<ventaNueva->getIdentificador();
 			registro_ventas<<"\n";
-
 			registro_ventas<<ventaNueva->getFecha();
 			registro_ventas<<"\n";
-
 			registro_ventas<<ventaNueva->getProducto();
 			registro_ventas<<"\n";
-			
 			registro_ventas<<ventaNueva->getCantidadVenta();
 			registro_ventas<<"\n";
-			
 			registro_ventas<<ventaNueva->getValorU();
 			registro_ventas<<"\n";
-			
 			registro_ventas<<ventaNueva->getIgv();
 			registro_ventas<<"\n";
-			
 			registro_ventas<<ventaNueva->getPrecioVenta();
 			registro_ventas<<"\n";
-			
 			registro_ventas<<"\n";
 		}
 		//cierra el archivo txt
@@ -557,54 +582,160 @@ void Menu::guardar_datos() //todos
 void Menu::escribir_registro_compras()
 {
 	//aqui metodo del mono
-	int identificador;
+	string identificador;
 	string fecha; 
 	string proveedor;
-	int guia_remitente;
-	int guia_transportista;
+	string guia_remitente;
+	string guia_transportista;
 	string producto;
 	double cantidad_compra;
 	double precio_compra;
 	
 	cout<<"Ingresando datos de nueva compra...\n\n";
 	
-	cout<<"Num Factura: ";
-	cin>>identificador;
+	bool correcto = false;
+	while (correcto==false) //factura
+	{
+		cout<<"Num Factura: ";
+		fflush(stdin);
+		getline(cin,identificador);
+		fflush(stdin);
+		
+		if (isNumber(identificador)==true && identificador.length() !=0 )
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 
 	cout<<"Fecha: ";
-	fflush(stdin); 
-	getline(cin,fecha);
-	fflush(stdin);
+	fecha = fechaActual();
 	
-	cout<<"Proveedor: ";
-	fflush(stdin);
-	getline(cin,proveedor);
-	fflush(stdin);
 	
-	cout<<"Num Guia de Remitente: ";
-	cin>>guia_remitente;
+	correcto = false;
+	while (correcto==false)
+	{
+		cout<<"Proveedor: ";
+		fflush(stdin);
+		getline(cin,proveedor);
+		fflush(stdin);
+		
+		if (proveedor.length() != 0)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 	
-	cout<<"Num Guia de Transportista: ";
-	cin>>guia_transportista;
+	correcto=false;
+	while (correcto==false)
+	{
+		cout<<"Num Guia de Remitente: ";
+		fflush(stdin); 
+		getline(cin,guia_remitente);
+		fflush(stdin);
+		
+		if (isNumber(guia_remitente)==true)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 
-	cout<<"Nombre del producto: ";
+	correcto=false;
+	while (correcto==false)
+	{
+	cout<<"Num Guia de Transportista: ";
 	fflush(stdin); 
-	getline(cin,producto);
+	getline(cin,guia_transportista);
 	fflush(stdin);
+		
+		if (isNumber(guia_transportista)==true)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 	
-	cout<<"Cantidad (unidad/kilo): ";
-	cin>>cantidad_compra;
+	correcto = false;
+	while (correcto==false)
+	{
+		cout<<"Nombre del producto: ";
+		fflush(stdin); 
+		getline(cin,producto);
+		fflush(stdin);
+		
+		if (producto.length() != 0)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
+
+	correcto=false;
+	while(correcto==false)
+	{
+		cout<<"Cantidad (unidad/kilo): ";
+		cin>>cantidad_compra;
+		
+		if (cantidad_compra > 0)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 	
-	cout<<"Precio Total (S/.): ";
-	cin>>precio_compra;
+	
+	
+	correcto=false;
+	while(correcto==false)
+	{
+		cout<<"Precio Total (S/.): ";
+		cin>>precio_compra;
+		
+		if (precio_compra > 0)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 	
 	cout<<"\n";
 	
 	
 	//pregunta de confirmacion
 	string opcion;
-    while(opcion!="1")
+    while(opcion!="1" && opcion!="si")
     {
+		system("CLS");
+		//creo objeto temporal
+		compra *compraPrueba = new compra(identificador,fecha,producto,proveedor,guia_remitente,guia_transportista,cantidad_compra,precio_compra);
+		//lo muestro para la confirmacion
+		cout<<"============== INGRESANDO COMPRA =============="<<endl<<endl;
+		compraPrueba->mostrarCompra();
+		delete compraPrueba;
+		
 		cout << " \nLos datos ingresados son correctos? \n";
 		cout << " 1. Si \n";
 		cout << " 2. No \n";
@@ -612,24 +743,24 @@ void Menu::escribir_registro_compras()
 		cout << " Opcion: ";
 		
 		fflush(stdin);
-		getline(cin,opcion);
+		getline(cin,opcion); //añadir texto si o no
 		fflush(stdin);
         
-		if(opcion=="2")
+		if(opcion=="2" || opcion=="no") 
 		{
 			system("CLS");
 			cout<<"Menu Principal < Menu Administrador < Ingresar Compra\n\n";
             escribir_registro_compras(); //se vuelve a llamar
 		}
 		
-		else if(opcion=="3")
+		else if(opcion=="3" || opcion=="cancelar")
 		{
 			system("CLS");
 			cout<<"Menu Principal < Menu Administrador\n\n";
 			MenuAdministrador(); //cancelar es regresar al menu administrador
 		}
         
-		else if(opcion!="1")
+		else if(opcion!="1" && opcion!="si")
 		{
             cout<<"Ha ingresado una opcion no valida\n\n"; //si escribe algo que no va
 		}
@@ -641,7 +772,7 @@ void Menu::escribir_registro_compras()
 	
 	num_compras++;
 	
-	//si nuestro espacio de memoria se llena, guardamos los registros en el archivo de texto y limpiamos el espacio
+	//si la memoria de compras se llena
 	if(num_compras >= n_elements)
 	{
 		guardar_compras();
@@ -656,8 +787,7 @@ void Menu::escribir_registro_compras()
 void Menu::escribir_registro_ventas()
 {
 	
-	
-	int identificador;
+	string identificador;
 	string fecha;
 	string producto;
 	double cantidad_venta;
@@ -667,41 +797,139 @@ void Menu::escribir_registro_ventas()
 	
 	cout<<"Ingresando datos de nueva venta...\n\n";
 	
-	cout<<"Num Boleta: ";
-	cin>>identificador;
+	bool correcto = false;
+	while (correcto==false) //boleta
+	{
+		cout<<"Num Boleta: ";
+		fflush(stdin);
+		getline(cin,identificador);
+		fflush(stdin);
+		
+		if (isNumber(identificador)==true && identificador.length() !=0 )
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 	
 	cout<<"Fecha: ";
-	fflush(stdin); 
-	getline(cin,fecha);
-	fflush(stdin);
+	fecha = fechaActual();
 	
-	cout<<"Producto: "; 
-	fflush(stdin);
-	getline(cin,producto);
-	fflush(stdin);
+	correcto = false;
+	while (correcto==false)
+	{
+		cout<<"Producto: "; 
+		fflush(stdin);
+		getline(cin,producto);
+		fflush(stdin);
+		
+		if (producto.length() != 0)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 	
-	cout<<"Cant Venta: ";
-	cin>>cantidad_venta;
+	correcto=false;
+	while(correcto==false)
+	{
+		cout<<"Cant Venta: ";
+		cin>>cantidad_venta;
+		
+		if (cantidad_venta > 0)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 	
-	cout<<"Valor de Venta x Unidad (S/.): ";
-	cin>>valor_u;
+	correcto=false;
+	while(correcto==false)
+	{
+		cout<<"Valor de Venta x Unidad (S/.): ";
+		cin>>valor_u;
+		
+		if (valor_u > 0)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
+	
 	
 	cout<<"Valor IGV (18%): ";
 	igv = (valor_u * cantidad_venta) / 100 * 18;
 	cout<<igv;
 	cout<<"\n";
 	
-	cout<<"Valor de Venta Total: ";
 	precio_venta = (valor_u * cantidad_venta) + igv;
+	
+	//descuento
+	string rpta;
+	bool xx=true;
+	double discount;
+	while(xx==true)
+	{
+		cout<<"Descuento (si/no)? ";
+		
+		fflush(stdin);
+		getline(cin,rpta);
+		fflush(stdin);
+		
+		if (rpta == "si" || rpta == "s")
+		{
+			double temp;
+			cout << "Ingresar descuento (%): ";
+			cin >> temp;
+			discount = (temp/100)*precio_venta;
+			precio_venta = precio_venta - discount;
+			xx=false;
+		}
+		else if (rpta == "no" || rpta == "n")
+		{
+			xx=false;
+		} 
+		else
+		{
+			cout<<"Comando no valido"<<endl<<endl;
+			
+		}
+	}
+	
+	cout<<"Valor de Venta Total: ";
 	cout<<precio_venta;
 	cout<<"\n";
 	
 	cout<<"\n";
 	
+
+	
+	
 	//pregunta de confirmacion
 	string opcion;
-    while(opcion!="1")
+    while(opcion!="1" && opcion!="si")
     {
+		system("CLS");
+		//creo objeto temporal
+		venta *ventaPrueba = new venta(identificador,fecha,producto,cantidad_venta,valor_u,igv,precio_venta);
+		//lo muestro para la confirmacion
+		cout<<"============== INGRESANDO BOLETA =============="<<endl<<endl;
+		
+		ventaPrueba->mostrarVenta();
+		delete ventaPrueba;
+		
 		cout << " \nLos datos ingresados son correctos? \n";
 		cout << " 1. Si \n";
 		cout << " 2. No \n";
@@ -712,21 +940,21 @@ void Menu::escribir_registro_ventas()
 		getline(cin,opcion);
 		fflush(stdin);
         
-		if(opcion=="2")
+		if(opcion=="2" || opcion=="no")
 		{
 			system("CLS");
 			cout<<"Menu Principal < Menu Vendedor < Ingresar Venta\n\n";
             escribir_registro_ventas(); //se vuelve a llamar
 		}
 		
-		else if(opcion=="3")
+		else if(opcion=="3" || opcion=="cancelar")
 		{
 			system("CLS");
 			cout<<"Menu Principal < Menu Vendedor\n\n";
 			MenuVendedor(); //cancelar es regresar al menu administrador
 		}
         
-		else if(opcion!="1")
+		else if(opcion!="1" && opcion!="si")
 		{
             cout<<"Ha ingresado una opcion no valida\n\n"; //si escribe algo que no va
 		}
@@ -752,7 +980,7 @@ void Menu::escribir_registro_ventas()
 void Menu::escribir_registro_clientes()
 {
 	//valores para usar 
-	int identificador; 
+	string identificador; 
 	string fecha;
 	string nombre;
 	string telefono;
@@ -760,18 +988,48 @@ void Menu::escribir_registro_clientes()
 	
 	cout<<"Ingresando datos de nuevo usuario...\n\n";
 	
-	cout<<"Dni: ";
-	cin>>identificador;
+	bool correcto = false;
+	while (correcto==false) //dni
+	{
+		cout<<"Dni: ";
+		
+		fflush(stdin);
+		getline(cin,identificador);
+		fflush(stdin);
+		
+		if (isNumber(identificador)==true && identificador.length()==8)
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
 	
 	cout<<"Fecha de Registro: ";
-	fflush(stdin);
-	getline(cin,fecha);
-	fflush(stdin);
+	fecha = fechaActual();
 	
-	cout<<"Nombre: "; 
-	fflush(stdin);
-	getline(cin,nombre);
-	fflush(stdin);
+	correcto=false;
+	while (correcto==false) //nombres de clientes
+	{
+		cout<<"Nombre: "; 
+		
+		fflush(stdin);
+		getline(cin,nombre);
+		fflush(stdin);
+		
+		if (isNoNumber(nombre)==true && nombre.length()!=0) //no nums pero si guiones etc
+		{
+			correcto=true;
+		}
+		else
+		{
+			cout<<"Valor no valido\n";
+		}
+	}
+	
+	
 	
 	cout<<"Numero Telefonico: ";
 	fflush(stdin);
@@ -787,8 +1045,18 @@ void Menu::escribir_registro_clientes()
 	
 	//pregunta de confirmacion
 	string opcion;
-    while(opcion!="1")
+    while(opcion!="1" && opcion!="si")
     {
+		
+		system("CLS");
+		//creo objeto temporal
+		cliente *clientePrueba = new cliente(identificador,fecha,nombre,telefono,domicilio);
+		//lo muestro para la confirmacion
+		cout<<"=========== INGRESANDO CLIENTE NUEVO ==========="<<endl<<endl;
+		
+		clientePrueba->mostrarCliente();
+		delete clientePrueba;
+		
 		cout << " \nLos datos ingresados son correctos? \n";
 		cout << " 1. Si \n";
 		cout << " 2. No \n";
@@ -799,21 +1067,21 @@ void Menu::escribir_registro_clientes()
 		getline(cin,opcion);
 		fflush(stdin);
         
-		if(opcion=="2")
+		if(opcion=="2" || opcion=="no")
 		{
 			system("CLS");
 			cout<<"Menu Principal < Menu Vendedor < Ingresar Cliente\n\n";
             escribir_registro_clientes();
 		}
 		
-		else if(opcion=="3")
+		else if(opcion=="3" || opcion=="cancelar")
 		{
 			system("CLS");
 			cout<<"Menu Principal < Menu Vendedor\n\n";
 			MenuVendedor(); //cancelar es regresar al menu administrador
 		}
         
-		else if(opcion!="1")
+		else if(opcion!="1" && opcion!="si")
 		{
             cout<<"Ha ingresado una opcion no valida\n\n"; //si escribe algo que no va
 		}
@@ -941,18 +1209,17 @@ void Menu::leer_registro_compras()
 
 void Menu::leer_registro_ventas()
 {
+	/*
 	//si hay para guardar, lo hace y limpia memoria
-	guardar_ventas();
+	//guardar_ventas();
 	
 	//contador
-	int n;
-	
+	//int n;
+	*/
 	//abrimos archivo
 	ifstream mostrar;
-	
 	//lo abrimos en modo "lectura" (in)
 	mostrar.open("registro_ventas.txt",ios::in);
-	
 	//en caso de fallo
 	if(mostrar.fail())
 	{		
@@ -964,7 +1231,6 @@ void Menu::leer_registro_ventas()
 		cout<<"registro_ventas.txt, si el archivo tiene otro nombre ren\242mbrelo al ya mencionado\n\n";
 		pausaFin();
 	}
-	
 	while(!mostrar.eof())
 	{
 		getline(mostrar,l_id);
@@ -975,10 +1241,9 @@ void Menu::leer_registro_ventas()
 		getline(mostrar,l_igv);
 		getline(mostrar,l_precio);
 		getline(mostrar,l_espacio);
-		
 		if (l_id != nulo)
 		{
-			n = n + 1;
+			//n++;
 			cout<<"Num Boleta: "<<l_id<<endl;
 			cout<<"Fecha: "<<l_fecha<<endl;
 			cout<<"Producto: "<<l_producto<<endl;
@@ -993,15 +1258,17 @@ void Menu::leer_registro_ventas()
 	//cerramos archivo
 	mostrar.close(); 
 	
-	cout<<"Registros de compra encontrados: "<<n<<endl<<endl;
+	registrosVentasRecientes();
+	/*
+	// cout<<"Registros de compra encontrados: "<<n<<endl<<endl;
 	
-	if (n==0)
-	{
-		cout<<"Es posible que no hallas guardado ningun registro anteriormente, si no es"<<endl;
-		cout<<"el caso entonces revisa que el archivo 'registro_ventas.txt' este en el"<<endl;
-		cout<<"mismo lugar que el programa y que tenga el nombre antes mencionado"<<endl<<endl;
-	}
-	
+	// if (n==0)
+	// {
+		// cout<<"Es posible que no hallas guardado ningun registro anteriormente, si no es"<<endl;
+		// cout<<"el caso entonces revisa que el archivo 'registro_ventas.txt' este en el"<<endl;
+		// cout<<"mismo lugar que el programa y que tenga el nombre antes mencionado"<<endl<<endl;
+	// }
+	*/
 	pausa(); //para dar tiempo a leer
 	
 
@@ -1112,7 +1379,7 @@ void Menu::registro_especifico_compra()
                 encontrado=true;
 				
                 cout<<"\n\nRegistro Encontrado\n\n";
-						
+			
 				cout<<"Num Factura: "<<l_id<<endl;
 				cout<<"Fecha: "<<l_fecha<<endl;
 				cout<<"Proveedor: "<<l_proveedor<<endl;
@@ -1279,13 +1546,69 @@ void Menu::registro_especifico_cliente()
 
 
 
+void Menu::registrosVentasRecientes()
+{
+	venta *val;
+	for (int i=0; i<num_ventas; i++)
+	{
+		val=ven[i];
+		val->mostrarVenta();
+		cout<<endl;
+	}
+}
+
+
+
+bool isNumber(const string& str) //solo discrimina numeros 0-9
+{
+    for (char const &c : str) 
+	{
+        if (std::isdigit(c) == 0)
+		{
+			return false;
+		}
+    }
+    return true;
+}
+
+bool isNoNumber(const string& str) //todo menos nums
+{
+    for (char const &c : str) 
+	{
+        if (std::isdigit(c) != 0) 
+		{
+			return false;
+		}
+    }
+    return true;
+}
+
+string fechaActual()
+{
+	time_t tim = time(0);
+	tm *gottime = localtime(&tim);
+	int day,month,year;
+	day = gottime->tm_mday;
+	month = gottime->tm_mon;
+	year = gottime->tm_year;
+	year = year + 1900;
+	
+	string dia = to_string(day);
+	string mes = to_string(month);
+	string anio = to_string(year);
+	
+	string fecha;
+	fecha = dia + "/" + mes + "/" + anio;
+	cout<<fecha<<endl;
+	return fecha;
+}
+
 void pausa()
 {
     cout<<"Presione ENTER para continuar ... ";
     getch();
     system("CLS");
 }
-
 
 void pausaFin()
 {	

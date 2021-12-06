@@ -3,42 +3,40 @@ using namespace std;
 
 class compra : public transaccion
 {
-	public:
+	private: //no hay clases hijas que usen variables
 	//atributos
-
 	string proveedor;
-	int guia_remitente;
-	int guia_transportista;
+	string guia_remitente; //num
+	string guia_transportista; //num
 	double cantidad_compra;
 	double precio_compra;
 	
+	public:
 	//constructor
-	compra(int,string,string,string,int,int,double,double);
+	compra(string,string,string,string,string,string,double,double);
 	//destructor
 	~compra();
 	
 	void mostrarCompra();
 	
-	
 	//Gets
-	
     string getProveedor(){return proveedor;}
-    int getGuiaRemitente(){return guia_remitente;}
-    int getGuiaTransportista(){return guia_transportista;}
+    string getGuiaRemitente(){return guia_remitente;}
+    string getGuiaTransportista(){return guia_transportista;}
     double getCantidadCompra(){return cantidad_compra;}
     double getPrecioCompra(){return precio_compra;}
 	
 	//sets
 
     void setProveedor(string _Proveedor){proveedor = _Proveedor;}
-    void setGuiaRemitente(int _GuiaRemitente){guia_remitente = _GuiaRemitente;}
-    void setGuiaTransportista(int _GuiaTransportista){guia_transportista = _GuiaTransportista;}
+    void setGuiaRemitente(string _GuiaRemitente){guia_remitente = _GuiaRemitente;}
+    void setGuiaTransportista(string _GuiaTransportista){guia_transportista = _GuiaTransportista;}
     void setCantidadCompra(double _CantidadCompra){cantidad_compra = _CantidadCompra;}
     void setPrecioCompra(double _PrecioCompra){precio_compra = _PrecioCompra;}
 };
 
 //constructor de compra 
-compra::compra(int _identificador,string _fecha,string _producto,string _proveedor,int _guia_remitente,int _guia_transportista,double _cantidad_compra,double _precio_compra) : transaccion(_identificador,_fecha,_producto)
+compra::compra(string _identificador,string _fecha,string _producto,string _proveedor,string _guia_remitente,string _guia_transportista,double _cantidad_compra,double _precio_compra) : transaccion(_identificador,_fecha,_producto)
 {
 	proveedor = _proveedor;
     guia_remitente = _guia_remitente;
@@ -49,4 +47,16 @@ compra::compra(int _identificador,string _fecha,string _producto,string _proveed
 
 //destructor
 compra::~compra(){
+}
+
+void compra::mostrarCompra()
+{
+	cout<<"Factura: "<<identificador<<endl;
+	cout<<"Fecha: "<<fecha<<endl;
+	cout<<"Proveedor: "<<proveedor<<endl;
+	cout<<"Guia de Remitente: "<<guia_remitente<<endl;
+	cout<<"Guia de Transportista: "<<guia_transportista<<endl;
+	cout<<"Producto: "<<producto<<endl;
+	cout<<"Cantidad (unitario/kg): "<<cantidad_compra<<endl;
+	cout<<"Precio Total: "<<precio_compra<<endl;
 }

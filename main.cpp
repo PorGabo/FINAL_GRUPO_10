@@ -7,10 +7,9 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string.h>
+#include <ctime> //para fecha automatica
 
 //archivos
-
-//clases
 #include "registro.h"
 #include "transaccion.h"
 #include "compra.h"
@@ -18,8 +17,6 @@
 #include "cliente.h"
 #include "menu.h"
 
-//funciones
-#include "funciones.h"
 
 /*
 
@@ -46,8 +43,8 @@ using namespace std;
 int main()
 {
 	
-	Menu caja;
-	caja.MenuPrincipal(); 
+	Menu inicio;
+	inicio.MenuPrincipal(); 
 	
     return 0;
 }

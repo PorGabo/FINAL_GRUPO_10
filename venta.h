@@ -3,16 +3,17 @@ using namespace std;
 
 class venta : public transaccion
 {
-	public:
+	private: //no hay clases hijas que usen variables
 	//atributos
-	
-	double cantidad_venta;
+	double cantidad_venta; 
 	double valor_u;
 	double igv;
 	double precio_venta;
 	
+	public:
+
 	//constructor
-	venta(int,string,string,double,double,double,double);
+	venta(string,string,string,double,double,double,double);
 	//destructor
 	~venta();
 	
@@ -37,7 +38,7 @@ class venta : public transaccion
 
 
 //constructor de venta 
-venta::venta(int _identificador,string _fecha,string _producto,double _cantidad_venta,double _valor_u,double _igv,double _precio_venta) : transaccion(_identificador,_fecha,_producto)
+venta::venta(string _identificador,string _fecha,string _producto,double _cantidad_venta,double _valor_u,double _igv,double _precio_venta) : transaccion(_identificador,_fecha,_producto)
 {
 
     cantidad_venta = _cantidad_venta;
@@ -50,3 +51,16 @@ venta::venta(int _identificador,string _fecha,string _producto,double _cantidad_
 //destructor
 venta::~venta(){
 }
+
+
+void venta::mostrarVenta()
+{
+	cout<<"Boleta: "<<identificador<<endl;
+	cout<<"Fecha: "<<fecha<<endl;
+	cout<<"Producto: "<<producto<<endl;
+	cout<<"Valor Unitario: "<<cantidad_venta<<endl;
+	cout<<"Igv: "<<igv<<endl;
+	cout<<"Precio Total: "<<precio_venta<<endl;
+}
+
+

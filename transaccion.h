@@ -8,7 +8,7 @@ class transaccion : public registro
 	string producto;
 	
 	//constructor
-	transaccion(int,string,string);
+	transaccion(string,string,string);
 	
 	//destructor
 	~transaccion();
@@ -24,7 +24,7 @@ class transaccion : public registro
 };
 
 //constructor de compra 
-transaccion::transaccion(int _identificador,string _fecha,string _producto) : registro(_identificador,_fecha)
+transaccion::transaccion(string _identificador,string _fecha,string _producto) : registro(_identificador,_fecha)
 {
     producto = _producto;
 }
@@ -33,5 +33,8 @@ transaccion::transaccion(int _identificador,string _fecha,string _producto) : re
 transaccion::~transaccion(){
 }
 
-
-
+void transaccion::mostrarTransaccion()
+{
+	mostrarRegistro();
+	cout<<"Producto: "<<producto<<endl;
+}
