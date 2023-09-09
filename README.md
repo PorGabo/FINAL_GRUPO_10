@@ -1,2 +1,2 @@
-# FINAL_GRUPO_10
-base de datos
+## Sistema de Contabilidad como Base de Datos
+Realizada enfocandose en negocios pequeños del rubro alimentario como usuario
